@@ -1,6 +1,6 @@
 # Python Version of the Elevator Server
 This doc should give you links to everything you need to know to develop
-the elevator-server code in Python (currently only tested in Python 3.6).
+the elevator-server code in Python (currently only tested in Python 3.7.7).
 
 # Generate
 We are using the [`swagger_py_codegen`](https://github.com/guokr/swagger-py-codegen)
@@ -15,24 +15,27 @@ First, let's get the repo:
 ```
 $ git clone git@github.com:OnBeep/elevator-server.git
 ```
-Then, to run the generation:
+
+The project will come with a pre-generates swagger server under py-ele/v1. If you wish
+to regenerate run the following:
 
 ```
-$ cd $REPO_ROOT
-$ swagger_py_codegen -s ./elevator.yml py-ele
-$ cd py-ele
-$ pip install -r requirements.txt
+$ cd $REPO_ROOT/py-ele
+$ pip install swagger-py-codegen 
+$ swagger_py_codegen --swagger-doc ../elevator.yml .
 ```
 
+To 
 FYI: The force-overridden files have already been added to the `.gitignore` file.
 
 To run the server:
 ```
-$ cd $REPO_ROOT/py-ele/py_ele
-$ python __init__.py
+$ cd $REPO_ROOT/py-ele
+$ pip install -r requirements.txt
+$ python py_ele/__init__.py 
 ```
 
-To see the welcome message from a running server:
+In a second terminal or a browser the server can be accessed using the contracted endpoints:
 ```
 $ curl http://127.0.0.1:5000/v1/welcome
 ```
@@ -40,5 +43,5 @@ $ curl http://127.0.0.1:5000/v1/welcome
 To run the unit tests:
 ```
 $ cd $REPO_ROOT/py-ele/py_ele
-$ pytest v1/api/tests/
+$ pytest py_ele/v1/api/tests
 ```

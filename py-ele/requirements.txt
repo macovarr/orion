@@ -1,5 +1,5 @@
-Flask
+Flask==1.1.2 
 Jinja2
 Flask-RESTful
-jsonschema
+jsonschema==3.2.0
 nose
