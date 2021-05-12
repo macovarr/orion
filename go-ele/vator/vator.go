@@ -78,7 +78,7 @@ func (v *Vator) Current(carID string) FloorDesc {
 
 // GetNearestCar - which car is located on the closest floor to the given floorID
 func (v *Vator) GetNearestCar(floorID string) (carID string) {
-	// To be copmleted by candidate
+	// To be completed by candidate
 	return ""
 }
 

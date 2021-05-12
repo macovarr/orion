@@ -3,15 +3,13 @@ package restapi
 import (
 	"crypto/tls"
 	"fmt"
+	"github.com/onbeep/elevator-server/restapi/operations"
+	"github.com/onbeep/elevator-server/vator"
 	"net/http"
 
-	errors "github.com/go-openapi/errors"
-	runtime "github.com/go-openapi/runtime"
-	middleware "github.com/go-openapi/runtime/middleware"
-	graceful "github.com/tylerb/graceful"
-
-	"github.com/onbeep/elevator-server/go-ele/restapi/operations"
-	"github.com/onbeep/elevator-server/go-ele/vator"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime"
+	"github.com/go-openapi/runtime/middleware"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -44,13 +42,13 @@ func configureAPI(api *operations.LiftyAPI) http.Handler {
 
 	api.CurrentFloorHandler = operations.CurrentFloorHandlerFunc(func(params operations.CurrentFloorParams) middleware.Responder {
 		f := v.Current(params.CarID)
-		body := operations.CurrentFloorOKBody{ID: &f.ID, Name: &f.Name}
-		return operations.NewCurrentFloorOK().WithPayload(body)
+		body := operations.CurrentFloorOKBody{ID: f.ID, Name: f.Name}
+		return operations.NewCurrentFloorOK().WithPayload(&body)
 	})
 	api.FloorCountHandler = operations.FloorCountHandlerFunc(func(params operations.FloorCountParams) middleware.Responder {
 		// return middleware.NotImplemented("operation .FloorCount has not yet been implemented")
 		length := int32(len(v.Floors()))
-		return operations.NewFloorCountOK().WithPayload(operations.FloorCountOKBody{
+		return operations.NewFloorCountOK().WithPayload(&operations.FloorCountOKBody{
 			Count: &length,
 		})
 	})
@@ -59,7 +57,7 @@ func configureAPI(api *operations.LiftyAPI) http.Handler {
 			return operations.NewInventoryUnauthorized()
 		}
 
-		body := []*operations.InventoryOKBodyItems0{}
+		var body []*operations.InventoryOKBodyItems0
 		for _, floor := range v.Floors() {
 			fid := floor.ID
 			fname := floor.Name
@@ -81,7 +79,7 @@ func configureAPI(api *operations.LiftyAPI) http.Handler {
 	})
 	api.WelcomeHandler = operations.WelcomeHandlerFunc(func(params operations.WelcomeParams) middleware.Responder {
 		w := "Welcome to the Elevator Server"
-		return operations.NewWelcomeOK().WithPayload(operations.WelcomeOKBody{Msg: &w})
+		return operations.NewWelcomeOK().WithPayload(&operations.WelcomeOKBody{Msg: &w})
 	})
 
 	api.ServerShutdown = func() {
@@ -100,7 +98,7 @@ func configureTLS(tlsConfig *tls.Config) {
 // If you need to modify a config, store server instance to stop it individually later, this is the place.
 // This function can be called multiple times, depending on the number of serving schemes.
 // scheme value will be set accordingly: "http", "https" or "unix"
-func configureServer(s *graceful.Server, scheme string) {
+func configureServer(s *http.Server, scheme, addr string) {
 }
 
 // The middleware configuration is for the handler executors. These do not apply to the swagger.json document.
