@@ -48,12 +48,20 @@ class Vator(object):
         return {'id': floor_id, 'name': self.floor_map[floor_id]}
 
     def find_closest_car(self, floor_id):
-        # To be completed
-        pass
+        closest = self.floor_count()
+        closest_car = None
+        for car in self.car_map.keys():
+            car_floor = self.floor_list.index(self.current_floor(car)['name'])
+            current_floor = self.floor_list.index(self.floor_map[floor_id])
+            if abs(car_floor-current_floor) <= closest:
+                closest = abs(car_floor-current_floor)
+                closest_car = car
+        return closest_car
 
     def call_car(self, floor_id):
-        # To be completed
-        pass
+        if floor_id not in self.car_map.values():
+            car = self.find_closest_car(floor_id)
+            self.car_current_floor[car] = floor_id
 
 
 elevator = Vator(['B2', 'B1', 'MZ', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7'], 2)
